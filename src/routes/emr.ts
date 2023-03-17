@@ -23,6 +23,17 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
         hn
       }
 
+      const key = `person_info_${zone}_${hospcode}_${hn}`;
+
+      // read from cache
+      const cacheResult: any = await fastify.redis.get(key);
+      if (cacheResult) {
+        const results: any = JSON.parse(cacheResult);
+        return reply.headers({ 'x-cache': true })
+          .status(StatusCodes.OK)
+          .send(results);
+      }
+
       // TODO: Get zones
       const resZone: any = await zoneModel.getZone(dbzone, zone);
 
@@ -37,24 +48,13 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
       const zoneEndpoint = resZone.endpoint || 'localhost:50052';
       const apiKey = resZone.apikey || '';
 
-      const key = `person_info_${zone}_${hospcode}_${hn}`;
+      const results: any = await emrModel.getPersonInfo(params, apiKey, zoneEndpoint);
+      // save to cache
+      await fastify.redis.set(key, JSON.stringify(results), 'EX', 2 * 60 * 60); // expire in 2hr
 
-      // read from cache
-      const cacheResult: any = await fastify.redis.get(key);
-      if (cacheResult) {
-        const results: any = JSON.parse(cacheResult);
-        reply.headers({ 'cache': true })
-          .status(StatusCodes.OK)
-          .send(results);
-      } else {
-        const results: any = await emrModel.getPersonInfo(params, apiKey, zoneEndpoint);
-        // save to cache
-        await fastify.redis.set(key, JSON.stringify(results), 'EX', 3600); // expire in 1hr
-
-        reply.headers({ 'cache': false })
-          .status(StatusCodes.OK)
-          .send(results);
-      }
+      reply.headers({ 'x-cache': false })
+        .status(StatusCodes.OK)
+        .send(results);
 
     } catch (error: any) {
       request.log.error(error)
