@@ -37,7 +37,7 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
       const zoneEndpoint = resZone.endpoint || 'localhost:50052';
       const apiKey = resZone.apikey || '';
 
-      const key = `${hospcode}_${hn}`;
+      const key = `person_info_${zone}_${hospcode}_${hn}`;
 
       // read from cache
       const cacheResult: any = await fastify.redis.get(key);
