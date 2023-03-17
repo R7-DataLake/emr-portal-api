@@ -111,4 +111,97 @@ export class GRPCClient {
     });
 
   }
+
+  /**
+   * 
+   * @param params {object} `hospcode` รหัสหน่วยบริการ, `an` ลำดับที่รับบริการ
+   * @param apiKey {string} คีย์สำหรับใช้กับ gRPC Server ฝั่ง สสจ.
+   * @returns {Promise<any[]>}
+   */
+  getIpdDiag(params: any, apiKey: any): Promise<any> {
+
+    const jwtMetadata = new grpc.Metadata();
+    jwtMetadata.add("Authorization", `Bearer ${apiKey}`);
+
+    return new Promise((resolve: any, reject: any) => {
+      this.client.getIpdDiag(params, jwtMetadata, (err: any, response: any) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(response)
+        }
+      });
+    });
+
+  }
+
+  /**
+   * 
+   * @param params {object} `hospcode` รหัสหน่วยบริการ, `seq` ลำดับที่รับบริการ
+   * @param apiKey {string} คีย์สำหรับใช้กับ gRPC Server ฝั่ง สสจ.
+   * @returns {Promise<any[]>}
+   */
+  getOpdDrug(params: any, apiKey: any): Promise<any> {
+
+    const jwtMetadata = new grpc.Metadata();
+    jwtMetadata.add("Authorization", `Bearer ${apiKey}`);
+
+    return new Promise((resolve: any, reject: any) => {
+      this.client.getOpdDrug(params, jwtMetadata, (err: any, response: any) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(response)
+        }
+      });
+    });
+
+  }
+
+  /**
+   * 
+   * @param params {object} `hospcode` รหัสหน่วยบริการ, `an` ลำดับที่รับบริการ
+   * @param apiKey {string} คีย์สำหรับใช้กับ gRPC Server ฝั่ง สสจ.
+   * @returns {Promise<any[]>}
+   */
+  getIpdDrug(params: any, apiKey: any): Promise<any> {
+
+    const jwtMetadata = new grpc.Metadata();
+    jwtMetadata.add("Authorization", `Bearer ${apiKey}`);
+
+    return new Promise((resolve: any, reject: any) => {
+      this.client.getIpdDrug(params, jwtMetadata, (err: any, response: any) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(response)
+        }
+      });
+    });
+
+  }
+
+  /**
+   * 
+   * @param params {object} `hospcode` รหัสหน่วยบริการ, `an` ลำดับที่รับบริการ
+   * @param apiKey {string} คีย์สำหรับใช้กับ gRPC Server ฝั่ง สสจ.
+   * @returns {Promise<any[]>}
+   */
+  getOpdLab(params: any, apiKey: any): Promise<any> {
+
+    const jwtMetadata = new grpc.Metadata();
+    jwtMetadata.add("Authorization", `Bearer ${apiKey}`);
+
+    return new Promise((resolve: any, reject: any) => {
+      this.client.getOpdLab(params, jwtMetadata, (err: any, response: any) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(response)
+        }
+      });
+    });
+
+  }
+
 }
