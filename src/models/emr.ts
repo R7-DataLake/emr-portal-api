@@ -17,4 +17,16 @@ export class EmrModel {
     return client.getLastIpd(params, apiKey);
   }
 
+  /**
+   * 
+   * @param params {object} `hospcode` รหัสหน่วยบริการ, `seq` ลำดับที่รับบริการ}
+   * @param apiKey {string} สำหรับเชื่อม gRPC ฝั่ง สสจ.
+   * @param zoneEndpoint {string} gRPC server สสจ.
+   * @returns 
+   */
+  async getOpdDiag(params: any, apiKey: any, zoneEndpoint: any): Promise<any> {
+    const client = new GRPCClient(zoneEndpoint);
+    return client.getOpdDiag(params, apiKey);
+  }
+
 }

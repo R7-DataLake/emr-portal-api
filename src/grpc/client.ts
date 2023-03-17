@@ -68,8 +68,8 @@ export class GRPCClient {
 
   /**
    * 
-   * @param params {object} hospcode รหัสหน่วยบริการ, hn รหัสประจำตัวผู้ป่วย
-   * @param apiKey {string} apiKey สำหรับใช้กับ gRPC Server ฝั่ง สสจ.
+   * @param params {object} `hospcode` รหัสหน่วยบริการ, `hn` รหัสประจำตัวผู้ป่วย
+   * @param apiKey {string} `apiKey` สำหรับใช้กับ gRPC Server ฝั่ง สสจ.
    * @returns {Promise<any[]>}
    */
   getLastIpd(params: any, apiKey: any): Promise<any> {
@@ -79,6 +79,29 @@ export class GRPCClient {
 
     return new Promise((resolve: any, reject: any) => {
       this.client.getLastIpd(params, jwtMetadata, (err: any, response: any) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(response)
+        }
+      });
+    });
+
+  }
+
+  /**
+   * 
+   * @param params {object} `hospcode` รหัสหน่วยบริการ, `seq` ลำดับที่รับบริการ
+   * @param apiKey {string} คีย์สำหรับใช้กับ gRPC Server ฝั่ง สสจ.
+   * @returns {Promise<any[]>}
+   */
+  getOpdDiag(params: any, apiKey: any): Promise<any> {
+
+    const jwtMetadata = new grpc.Metadata();
+    jwtMetadata.add("Authorization", `Bearer ${apiKey}`);
+
+    return new Promise((resolve: any, reject: any) => {
+      this.client.getOpdDiag(params, jwtMetadata, (err: any, response: any) => {
         if (err) {
           reject(err)
         } else {
