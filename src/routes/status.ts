@@ -33,9 +33,9 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
     try {
 
       const body: any = request.body;
-      const { zone } = body;
+      const { zoneKey } = body;
 
-      const resZone: any = await zoneModel.getZone(dbzone, zone);
+      const resZone: any = await zoneModel.getZone(dbzone, zoneKey);
 
       if (_.isEmpty(resZone)) {
         return reply.status(StatusCodes.NOT_FOUND)

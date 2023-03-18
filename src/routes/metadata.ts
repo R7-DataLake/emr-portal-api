@@ -1,14 +1,15 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
-import { StatusCodes } from "http-status-codes"
-import _ from "lodash";
-const crypto = require('crypto');
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { StatusCodes } from 'http-status-codes';
+import _ from 'lodash';
+import { DateTime } from 'luxon';
 
-import searchSchema from '../schema/metadata/search';
-import lastOpdSchema from '../schema/metadata/opd_last';
+import { MetadataModel } from '../models/metadata';
 import lastIpdSchema from '../schema/metadata/ipd_last';
+import lastOpdSchema from '../schema/metadata/opd_last';
 import patientListSchema from '../schema/metadata/patient_list';
-import { MetadataModel } from "../models/metadata";
-import { DateTime } from "luxon";
+import searchSchema from '../schema/metadata/search';
+
+const crypto = require('crypto');
 
 export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
@@ -127,7 +128,9 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
     } catch (error: any) {
       request.log.error(error)
       reply.status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .send({ status: 'error' })
+        .send({
+          status: 'error',
+        })
     }
   });
 
