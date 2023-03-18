@@ -6,8 +6,8 @@ import Redis from 'ioredis';
 declare module 'fastify' {
   interface FastifyInstance {
     authenticate: any;
-    dbmetadata: Knex;
-    dbzone: Knex;
+    axios: AxiosInstance;
+    db: Knex;
     jwt: any;
     redis: Redis;
   }
