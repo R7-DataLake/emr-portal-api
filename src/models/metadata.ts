@@ -126,4 +126,21 @@ export class MetadataModel {
     return sql.limit(limit).offset(offset);
   }
 
+  getPersonListTotal(db: Knex, hospcode: any, query: any) {
+    const sql = db('metadata.person as p')
+      .where('p.hospcode', hospcode);
+
+    if (query) {
+      const _query = `%${query}%`;
+      sql.where(w => {
+        w.orWhere('p.hn', query)
+          .orWhere('p.cid', query)
+          .orWhere('p.fname', 'like', _query)
+          .orWhere('p.lname', 'like', _query)
+      })
+    }
+
+    return sql.count({ total: '*' });
+  }
+
 }

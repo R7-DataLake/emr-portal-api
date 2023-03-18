@@ -12,7 +12,7 @@ import { DateTime } from "luxon";
 
 export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
-  const metdataModel = new MetadataModel();
+  const metadataModel = new MetadataModel();
   const db = fastify.dbmetadata;
 
   fastify.post('/search', {
@@ -35,7 +35,7 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
           .send(results);
       }
 
-      const _data: any = await metdataModel.search(db, cid);
+      const _data: any = await metadataModel.search(db, cid);
 
       const results = _data.map((v: any) => {
         v.birth = DateTime.fromJSDate(v.birth).toFormat('yyyy-MM-dd');
@@ -75,7 +75,7 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
           .send(results);
       }
 
-      const _data: any = await metdataModel.getLastOPDvisit(db, cid);
+      const _data: any = await metadataModel.getLastOPDvisit(db, cid);
       const results = _data.map((v: any) => {
         v.date_serv = DateTime.fromJSDate(v.date_serv).toFormat('yyyy-MM-dd');
         return v;
@@ -113,7 +113,7 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
           .send(results);
       }
 
-      const _data: any = await metdataModel.getLastIPDvisit(db, cid);
+      const _data: any = await metadataModel.getLastIPDvisit(db, cid);
       const results = _data.map((v: any) => {
         v.dateadm = DateTime.fromJSDate(v.dateadm).toFormat('yyyy-MM-dd');
         v.datedsc = DateTime.fromJSDate(v.datedsc).toFormat('yyyy-MM-dd');
@@ -153,12 +153,20 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
           .send(results);
       }
 
-      const _data: any = await metdataModel.getPersonList(db, hospcode, query, limit, offset);
+      const _data: any = await metadataModel.getPersonList(db, hospcode, query, limit, offset);
 
-      const results = _data.map((v: any) => {
+      const total: any = await metadataModel.getPersonListTotal(db, hospcode, query);
+
+      const _results = _data.map((v: any) => {
         v.birth = DateTime.fromJSDate(v.birth).toFormat('yyyy-MM-dd');
         return v;
       })
+
+      const results = {
+        results: _results,
+        total: Number(total[0].total)
+      }
+
       await fastify.redis.set(key, JSON.stringify(results), 'EX', 2 * 60 * 60); // expire in 2hr
 
       reply.headers({ 'x-cache': false })
