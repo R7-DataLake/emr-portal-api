@@ -4,16 +4,18 @@ import _ from 'lodash';
 
 import { EmrModel } from '../models/emr';
 import { ZoneModel } from '../models/zone';
+import ipdDiagSchema from '../schema/emr/ipd_diag';
+import ipdDrugSchema from '../schema/emr/ipd_drug';
+import ipdInfoSchema from '../schema/emr/ipd_info';
 import ipdLastSchema from '../schema/emr/ipd_last';
+import opdDiagSchema from '../schema/emr/opd_diag';
+import opdDrugSchema from '../schema/emr/opd_drug';
+import opdInfoSchema from '../schema/emr/opd_info';
+import opdLabSchema from '../schema/emr/opd_lab';
 import opdLastSchema from '../schema/emr/opd_last';
 import personInfoSchema from '../schema/emr/person_info';
-import opdDiagSchema from '../schema/emr/opd_diag';
-import ipdDiagSchema from '../schema/emr/ipd_diag';
-import opdDrugSchema from '../schema/emr/opd_drug';
-import ipdDrugSchema from '../schema/emr/ipd_drug';
-import opdLabSchema from '../schema/emr/opd_lab';
-import ipdInfoSchema from '../schema/emr/ipd_info';
-import opdInfoSchema from '../schema/emr/opd_info';
+
+const crypto = require('crypto');
 
 export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
@@ -33,8 +35,8 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
         hn
       }
 
-      const key = `r7platform_emr_api_person_info_${zone}_${hospcode}_${hn}`;
-
+      const strKey = `r7platform_emr_api_person_info_${zone}_${hospcode}_${hn}`;
+      const key = crypto.createHash('md5').update(strKey).digest("hex");
       // read from cache
       const cacheResult: any = await fastify.redis.get(key);
       if (cacheResult) {
@@ -88,8 +90,8 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
         hn
       }
 
-      const key = `r7platform_emr_api_opd_last_${zone}_${hospcode}_${hn}`;
-
+      const strKey = `r7platform_emr_api_opd_last_${zone}_${hospcode}_${hn}`;
+      const key = crypto.createHash('md5').update(strKey).digest("hex");
       // read from cache
       const cacheResult: any = await fastify.redis.get(key);
       if (cacheResult) {
@@ -143,8 +145,8 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
         hn
       }
 
-      const key = `r7platform_emr_api_ipd_last_${zone}_${hospcode}_${hn}`;
-
+      const strKey = `r7platform_emr_api_ipd_last_${zone}_${hospcode}_${hn}`;
+      const key = crypto.createHash('md5').update(strKey).digest("hex");
       // read from cache
       const cacheResult: any = await fastify.redis.get(key);
       if (cacheResult) {
@@ -198,8 +200,8 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
         seq
       }
 
-      const key = `r7platform_emr_api_opd_diag_${zone}_${hospcode}_${seq}`;
-
+      const strKey = `r7platform_emr_api_opd_diag_${zone}_${hospcode}_${seq}`;
+      const key = crypto.createHash('md5').update(strKey).digest("hex");
       // read from cache
       const cacheResult: any = await fastify.redis.get(key);
       if (cacheResult) {
@@ -253,8 +255,8 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
         an
       }
 
-      const key = `r7platform_emr_api_ipd_diag_${zone}_${hospcode}_${an}`;
-
+      const strKey = `r7platform_emr_api_ipd_diag_${zone}_${hospcode}_${an}`;
+      const key = crypto.createHash('md5').update(strKey).digest("hex");
       // read from cache
       const cacheResult: any = await fastify.redis.get(key);
       if (cacheResult) {
@@ -308,8 +310,8 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
         an
       }
 
-      const key = `r7platform_emr_api_ipd_drug_${zone}_${hospcode}_${an}`;
-
+      const strKey = `r7platform_emr_api_ipd_drug_${zone}_${hospcode}_${an}`;
+      const key = crypto.createHash('md5').update(strKey).digest("hex");
       // read from cache
       const cacheResult: any = await fastify.redis.get(key);
       if (cacheResult) {
@@ -363,8 +365,8 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
         seq
       }
 
-      const key = `r7platform_emr_api_opd_drug_${zone}_${hospcode}_${seq}`;
-
+      const strKey = `r7platform_emr_api_opd_drug_${zone}_${hospcode}_${seq}`;
+      const key = crypto.createHash('md5').update(strKey).digest("hex");
       // read from cache
       const cacheResult: any = await fastify.redis.get(key);
       if (cacheResult) {
@@ -418,8 +420,8 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
         seq
       }
 
-      const key = `r7platform_emr_api_opd_lab_${zone}_${hospcode}_${seq}`;
-
+      const strKey = `r7platform_emr_api_opd_lab_${zone}_${hospcode}_${seq}`;
+      const key = crypto.createHash('md5').update(strKey).digest("hex");
       // read from cache
       const cacheResult: any = await fastify.redis.get(key);
       if (cacheResult) {
@@ -473,8 +475,8 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
         seq
       }
 
-      const key = `r7platform_emr_api_opd_info_${zone}_${hospcode}_${seq}`;
-
+      const strKey = `r7platform_emr_api_opd_info_${zone}_${hospcode}_${seq}`;
+      const key = crypto.createHash('md5').update(strKey).digest("hex");
       // read from cache
       const cacheResult: any = await fastify.redis.get(key);
       if (cacheResult) {
@@ -528,8 +530,8 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
         an
       }
 
-      const key = `r7platform_emr_api_ipd_info_${zone}_${hospcode}_${an}`;
-
+      const strKey = `r7platform_emr_api_ipd_info_${zone}_${hospcode}_${an}`;
+      const key = crypto.createHash('md5').update(strKey).digest("hex");
       // read from cache
       const cacheResult: any = await fastify.redis.get(key);
       if (cacheResult) {
