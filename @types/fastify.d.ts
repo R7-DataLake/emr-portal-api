@@ -1,7 +1,7 @@
 import * as jsonwebtoken from 'jsonwebtoken';
 import { AxiosInstance } from 'axios';
 import Knex from 'knex';
-import Redis from 'ioredis';
+import bcrypt from 'bcrypt';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -9,7 +9,7 @@ declare module 'fastify' {
     axios: AxiosInstance;
     db: Knex;
     jwt: any;
-    redis: Redis;
+    bcrypt: bcrypt;
   }
 
   interface FastifyRequest {

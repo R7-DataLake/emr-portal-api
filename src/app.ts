@@ -29,6 +29,7 @@ app.register(import('@fastify/rate-limit'), {
 
 // Metadata database connection
 app.register(require('./plugins/db'), {
+  name: 'db',
   options: {
     client: 'pg',
     connection: {
@@ -81,11 +82,17 @@ app.register(require('fastify-axios'), {
   headers: {
     'Authorization': 'Bearer ' + process.env.R7PLATFORM_EMR_PORTAL_API_EMR_APIKEY
   }
+});
+
+app.register(require('fastify-bcrypt'), {
+  saltWorkFactor: 12
 })
 
 // routes
+app.register(require("./routes/status"), { prefix: '/status' })
 app.register(require("./routes/emr"), { prefix: '/emr' })
 app.register(require("./routes/metadata"), { prefix: '/metadata' })
-app.register(require("./routes/status"), { prefix: '/status' })
+app.register(require("./routes/register"), { prefix: '/register' })
+app.register(require("./routes/login"), { prefix: '/login' })
 
 export default app
