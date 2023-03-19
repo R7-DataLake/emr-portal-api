@@ -100,7 +100,15 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
     schema: patientListSchema
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
-      const query: any = request.query;
+      const _query: any = request.query;
+      let query: any = {};
+      query.limit = _query.limit;
+      query.offset = _query.offset;
+
+      if (_query.query) {
+        query.query = _query.query;
+      }
+
       const strQuery = qs.stringify(query);
 
       const url: any = `/metadata/patient/list?${strQuery}&`;
