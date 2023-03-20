@@ -1,6 +1,8 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
+import { Knex } from 'knex';
 import _ from 'lodash';
+import { LogModel } from '../models/log';
 
 import ipdDiagSchema from '../schema/emr/ipd_diag';
 import ipdDrugSchema from '../schema/emr/ipd_drug';
@@ -15,6 +17,9 @@ import personInfoSchema from '../schema/emr/person_info';
 
 
 export default async (fastify: FastifyInstance, _options: any, done: any) => {
+
+  const logModel = new LogModel();
+  const db: Knex = fastify.db;
 
   fastify.post('/person/info', {
     onRequest: [fastify.authenticate],
@@ -33,6 +38,18 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
       const results: any = await fastify.axios.post(url, params);
       const data: any = results.data;
+
+      // save log
+      const userId: any = request.user.sub;
+      const log: any = {
+        user_id: userId,
+        hospcode,
+        hn,
+        zone_key: zoneKey,
+        event_name: 'EMR_PERSON_INFO'
+      };
+      await logModel.saveEmrViewLog(db, log);
+
       reply
         .status(StatusCodes.OK)
         .send(data);
@@ -65,6 +82,18 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
       const results: any = await fastify.axios.post(url, params);
       const data: any = results.data;
+
+      // save log
+      const userId: any = request.user.sub;
+      const log: any = {
+        user_id: userId,
+        hospcode,
+        hn,
+        zone_key: zoneKey,
+        event_name: 'EMR_OPD_LAST'
+      };
+      await logModel.saveEmrViewLog(db, log);
+
       reply
         .status(StatusCodes.OK)
         .send(data);
@@ -98,6 +127,18 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
       const results: any = await fastify.axios.post(url, params);
       const data: any = results.data;
+
+      // save log
+      const userId: any = request.user.sub;
+      const log: any = {
+        user_id: userId,
+        hospcode,
+        hn,
+        zone_key: zoneKey,
+        event_name: 'EMR_IPD_LAST'
+      };
+      await logModel.saveEmrViewLog(db, log);
+
       reply
         .status(StatusCodes.OK)
         .send(data);
@@ -118,10 +159,11 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const body: any = request.body;
-      const { hospcode, seq, zoneKey } = body;
+      const { hospcode, seq, hn, zoneKey } = body;
 
       const params: any = {
         hospcode,
+        hn,
         seq,
         zoneKey
       }
@@ -130,6 +172,19 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
       const results: any = await fastify.axios.post(url, params);
       const data: any = results.data;
+
+      // save log
+      const userId: any = request.user.sub;
+      const log: any = {
+        user_id: userId,
+        hospcode,
+        hn,
+        seq,
+        zone_key: zoneKey,
+        event_name: 'EMR_OPD_DIAG'
+      };
+      await logModel.saveEmrViewLog(db, log);
+
       reply
         .status(StatusCodes.OK)
         .send(data);
@@ -150,10 +205,11 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const body: any = request.body;
-      const { hospcode, an, zoneKey } = body;
+      const { hospcode, an, hn, zoneKey } = body;
 
       const params: any = {
         hospcode,
+        hn,
         an,
         zoneKey
       }
@@ -162,6 +218,19 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
       const results: any = await fastify.axios.post(url, params);
       const data: any = results.data;
+
+      // save log
+      const userId: any = request.user.sub;
+      const log: any = {
+        user_id: userId,
+        hospcode,
+        hn,
+        an,
+        zone_key: zoneKey,
+        event_name: 'EMR_IPD_DIAG'
+      };
+      await logModel.saveEmrViewLog(db, log);
+
       reply
         .status(StatusCodes.OK)
         .send(data);
@@ -182,10 +251,11 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const body: any = request.body;
-      const { hospcode, an, zoneKey } = body;
+      const { hospcode, an, hn, zoneKey } = body;
 
       const params: any = {
         hospcode,
+        hn,
         an,
         zoneKey
       }
@@ -194,6 +264,19 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
       const results: any = await fastify.axios.post(url, params);
       const data: any = results.data;
+
+      // save log
+      const userId: any = request.user.sub;
+      const log: any = {
+        user_id: userId,
+        hospcode,
+        hn,
+        an,
+        zone_key: zoneKey,
+        event_name: 'EMR_IPD_DRUG'
+      };
+      await logModel.saveEmrViewLog(db, log);
+
       reply
         .status(StatusCodes.OK)
         .send(data);
@@ -214,11 +297,12 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const body: any = request.body;
-      const { hospcode, seq, zoneKey } = body;
+      const { hospcode, seq, hn, zoneKey } = body;
 
       const params: any = {
         hospcode,
         seq,
+        hn,
         zoneKey
       }
 
@@ -226,6 +310,19 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
       const results: any = await fastify.axios.post(url, params);
       const data: any = results.data;
+
+      // save log
+      const userId: any = request.user.sub;
+      const log: any = {
+        user_id: userId,
+        hospcode,
+        hn,
+        seq,
+        zone_key: zoneKey,
+        event_name: 'EMR_OPD_DRUG'
+      };
+      await logModel.saveEmrViewLog(db, log);
+
       reply
         .status(StatusCodes.OK)
         .send(data);
@@ -246,10 +343,11 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const body: any = request.body;
-      const { hospcode, seq, zoneKey } = body;
+      const { hospcode, seq, hn, zoneKey } = body;
 
       const params: any = {
         hospcode,
+        hn,
         seq,
         zoneKey
       }
@@ -258,6 +356,19 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
       const results: any = await fastify.axios.post(url, params);
       const data: any = results.data;
+
+      // save log
+      const userId: any = request.user.sub;
+      const log: any = {
+        user_id: userId,
+        hospcode,
+        hn,
+        seq,
+        zone_key: zoneKey,
+        event_name: 'EMR_OPD_LAB'
+      };
+      await logModel.saveEmrViewLog(db, log);
+
       reply
         .status(StatusCodes.OK)
         .send(data);
@@ -278,10 +389,11 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const body: any = request.body;
-      const { hospcode, seq, zoneKey } = body;
+      const { hospcode, seq, hn, zoneKey } = body;
 
       const params: any = {
         hospcode,
+        hn,
         seq,
         zoneKey
       }
@@ -290,6 +402,19 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
       const results: any = await fastify.axios.post(url, params);
       const data: any = results.data;
+
+      // save log
+      const userId: any = request.user.sub;
+      const log: any = {
+        user_id: userId,
+        hospcode,
+        hn,
+        seq,
+        zone_key: zoneKey,
+        event_name: 'EMR_OPD_INFO'
+      };
+      await logModel.saveEmrViewLog(db, log);
+
       reply
         .status(StatusCodes.OK)
         .send(data);
@@ -310,10 +435,11 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const body: any = request.body;
-      const { hospcode, an, zoneKey } = body;
+      const { hospcode, an, hn, zoneKey } = body;
 
       const params: any = {
         hospcode,
+        hn,
         an,
         zoneKey
       }
@@ -322,6 +448,19 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
       const results: any = await fastify.axios.post(url, params);
       const data: any = results.data;
+
+      // save log
+      const userId: any = request.user.sub;
+      const log: any = {
+        user_id: userId,
+        hospcode,
+        hn,
+        an,
+        zone_key: zoneKey,
+        event_name: 'EMR_IPD_INFO'
+      };
+      await logModel.saveEmrViewLog(db, log);
+
       reply
         .status(StatusCodes.OK)
         .send(data);

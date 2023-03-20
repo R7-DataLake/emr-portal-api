@@ -7,8 +7,13 @@ import ipdLastSchema from '../schema/metadata/ipd_last';
 import opdLastSchema from '../schema/metadata/opd_last';
 import searchSchema from '../schema/metadata/search';
 import patientListSchema from '../schema/metadata/patient_list';
+import { Knex } from 'knex';
+import { LogModel } from '../models/log';
 
 export default async (fastify: FastifyInstance, _options: any, done: any) => {
+
+  const db: Knex = fastify.db;
+  const logModel = new LogModel();
 
   fastify.post('/opd/last', {
     onRequest: [fastify.authenticate],
@@ -24,6 +29,19 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
       const results: any = await fastify.axios.post(url, params);
       const data: any = results.data;
+
+      // save log
+      const userId: any = request.user.sub;
+      const hospcode: any = request.user.hospcode;
+
+      const log: any = {
+        user_id: userId,
+        hospcode,
+        patient_cid: cid,
+        event_name: 'METADATA_OPD_LAST'
+      };
+      await logModel.saveEmrViewLog(db, log);
+
       reply
         .status(StatusCodes.OK)
         .send(data);
@@ -53,6 +71,19 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
       const results: any = await fastify.axios.post(url, params);
       const data: any = results.data;
+
+      // save log
+      const userId: any = request.user.sub;
+      const hospcode: any = request.user.hospcode;
+
+      const log: any = {
+        user_id: userId,
+        hospcode,
+        patient_cid: cid,
+        event_name: 'METADATA_IPD_LAST'
+      };
+      await logModel.saveEmrViewLog(db, log);
+
       reply
         .status(StatusCodes.OK)
         .send(data);
@@ -81,6 +112,7 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
       const results: any = await fastify.axios.post(url, params);
       const data: any = results.data;
+
       reply
         .status(StatusCodes.OK)
         .send(data);
