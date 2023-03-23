@@ -93,6 +93,7 @@ app.register(require("./routes/status"), { prefix: '/status' })
 app.register(require("./routes/emr"), { prefix: '/emr' })
 app.register(require("./routes/metadata"), { prefix: '/metadata' })
 app.register(require("./routes/register"), { prefix: '/register' })
+app.register(require("./routes/profile"), { prefix: '/profile' })
 app.register(require("./routes/login"), { prefix: '/login' })
 
 export default app
