@@ -10,11 +10,17 @@ declare module 'fastify' {
     db: Knex;
     jwt: any;
     bcrypt: bcrypt;
+    csrfProtection(): any
   }
 
   interface FastifyRequest {
     user: any;
     jwtVerify: jsonwebtoken
+  }
+
+  interface FastifyReply {
+    view: any;
+    generateCsrf(): any;
   }
 
 }

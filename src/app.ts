@@ -1,5 +1,7 @@
 import fastify from 'fastify';
 
+import path from 'path';
+
 const app = fastify({
   logger: {
     transport:
@@ -26,6 +28,24 @@ app.register(import('@fastify/rate-limit'), {
   max: 100,
   timeWindow: '1 minute'
 })
+
+app.register(require('@fastify/static'), {
+  root: path.join(__dirname, '../public'),
+  prefix: '/',
+  // constraints: { host: 'r7.moph.go.th' }
+})
+
+app.register(require('@fastify/cookie'), { secret: '0VbmSUl1RB5Veds5b3HhlJ8ZB9An4Yi9uQWUtsstqyBuUXc3Gr6QRRr9mPymOFbu' }) // See following section to ensure security
+app.register(require('@fastify/csrf-protection'), {
+  cookieOpts: { signed: true }
+})
+
+// Views
+app.register(require("@fastify/view"), {
+  engine: {
+    ejs: require("ejs"),
+  },
+});
 
 // Metadata database connection
 app.register(require('./plugins/db'), {
@@ -95,5 +115,6 @@ app.register(require("./routes/metadata"), { prefix: '/metadata' })
 app.register(require("./routes/register"), { prefix: '/register' })
 app.register(require("./routes/profile"), { prefix: '/profile' })
 app.register(require("./routes/login"), { prefix: '/login' })
+app.register(require("./routes/oauth"), { prefix: '/oauth' })
 
 export default app
