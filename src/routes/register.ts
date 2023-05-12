@@ -11,6 +11,21 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
   const db = fastify.db;
   const registerModel = new RegisterModel();
 
+  fastify.get('/', {
+    config: {
+      rateLimit: {
+        max: 50,
+        timeWindow: '1 minute'
+      }
+    },
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const query: any = request.query;
+
+    const token = await reply.generateCsrf()
+    return reply.view('/views/register.ejs', { token });
+
+  });
+
   fastify.post('/', {
     schema: registerSchema,
   }, async (request: FastifyRequest, reply: FastifyReply) => {

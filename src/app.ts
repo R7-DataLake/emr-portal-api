@@ -20,13 +20,32 @@ const app = fastify({
 
 // Plugins
 app.register(require('@fastify/formbody'))
-app.register(require('@fastify/cors'))
+app.register(require('@fastify/cors'), {
+  origin: 'https://r7.moph.go.th',
+  methods: ['GET', 'POST'],
+})
 
 // Rate limit
+const Redis = require('ioredis')
+const redis = new Redis({
+  connectionName: 'ingress-resis',
+  host: process.env.R7PLATFORM_EMR_PORTAL_API_REDIS_RATELIMIT_HOST || 'localhost',
+  port: Number(process.env.R7PLATFORM_EMR_PORTAL_API_REDIS_RATELIMIT_PORT) || 6379,
+  password: process.env.R7PLATFORM_EMR_PORTAL_API_REDIS_RATELIMIT_PASSWORD || '',
+  connectTimeout: 500,
+  maxRetriesPerRequest: 1
+})
+
 app.register(import('@fastify/rate-limit'), {
-  global: false,
-  max: 100,
-  timeWindow: '1 minute'
+  global: true,
+  nameSpace: 'r7platform-emr-portal-ratelimit-',
+  max: 1000,
+  timeWindow: '24h',
+  ban: 3,
+  keyGenerator: (request: any) => {
+    return request.headers['x-real-ip'];
+  },
+  redis: redis
 })
 
 app.register(require('@fastify/static'), {
@@ -35,7 +54,7 @@ app.register(require('@fastify/static'), {
   // constraints: { host: 'r7.moph.go.th' }
 })
 
-app.register(require('@fastify/cookie'), { secret: '0VbmSUl1RB5Veds5b3HhlJ8ZB9An4Yi9uQWUtsstqyBuUXc3Gr6QRRr9mPymOFbu' }) // See following section to ensure security
+app.register(require('@fastify/cookie'), { secret: process.env.R7PLATFORM_EMR_PORTAL_API_COOKIE_SECRET }) // See following section to ensure security
 app.register(require('@fastify/csrf-protection'), {
   cookieOpts: { signed: true }
 })

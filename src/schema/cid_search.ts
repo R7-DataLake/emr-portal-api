@@ -5,4 +5,4 @@ const schema = S.object()
 
 export default {
   body: schema
-}
+} 

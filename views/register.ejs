@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>R7 Single Sign-On</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300&display=swap');
+
+    html,
+    body {
+      font-family: 'Kanit', sans-serif;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+
+<body>
+  <div class="vh-100 d-flex justify-content-center align-items-center">
+    <div class="container">
+      <div class="row d-flex justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+          <div class="card bg-white">
+            <div class="card-body p-5">
+              <form class="mb-3 mt-md-4 needs-validation" action="/oauth/dopa/verify" method='POST' id="form"
+                novalidate>
+                <h2 class="fw-bold mb-2">
+                  ลงทะเบียนใช้งานระบบ
+                </h2>
+                <p class="mb-5">
+                  กรุณากรอกข้อมูลเพื่อลงทะเบียนขอใช้บริการแพลตฟอร์ม
+                </p>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-3">
+                      <label for="cid" class="form-label">เลขบัตรประชาชน</label>
+                      <div class="input-group has-validation">
+                        <input type="text" class="form-control" id="cid" name="cid" required="">
+                        <div class="invalid-feedback">
+                          ระบุเลขบัตรประชาชน 13 หลัก
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-3">
+                      <label for="fname" class="form-label">ชื่อ</label>
+                      <input type="text" class="form-control" id="fname" name="fname" required="">
+                      <div class="invalid-feedback">
+                        ระบุชื่อ
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-3">
+                      <label for="lname" class="form-label">สกุล</label>
+                      <input type="text" class="form-control" id="lname" name="lname" required="">
+                      <div class="invalid-feedback">
+                        ระบุนามสกุล
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-3">
+                      <label for="email" class="form-label">อีเมล์</label>
+                      <input type="email" class="form-control" id="email" placeholder="me@mail.go.th">
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-3">
+                      <label for="position" class="form-label">ประเภทตำแหน่ง</label>
+                      <select class="form-select" aria-label="ประเภทตำแหน่ง">
+                        <option selected>เลือก...</option>
+                        <option value="1">แพทย์</option>
+                        <option value="4">ทันตแพทย์</option>
+                        <option value="2">พยาบาล</option>
+                        <option value="3">นักวิชาการ/เจ้าพนักงานสาธารณสุข</option>
+                        <option value="3">นักวิชาการสาธารณสุข</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-3">
+                      <label for="position" class="form-label">หน่วยบริการ</label>
+                      <select class="form-select" aria-label="หน่วยบริการ">
+                        <option selected>เลือก...</option>
+                        <option value="1">แพทย์</option>
+                        <option value="4">ทันตแพทย์</option>
+                        <option value="2">พยาบาล</option>
+                        <option value="3">นักวิชาการ/เจ้าพนักงานสาธารณสุข</option>
+                        <option value="3">นักวิชาการสาธารณสุข</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3 mt-3">
+                  <div class="col-6">
+                    <div class="d-grid gap-2">
+                      <button type="submit" name="action" value="reset"
+                        class="btn btn-secondary btn-lg">กลับหน้าหลัก</button>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="d-grid gap-2">
+                      <button type="submit" name="action" value="login"
+                        class="btn btn-success btn-lg">บันทึกข้อมูล</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-center">
+                  <small>โดย สำนักงานเขตสุขภาพที่ 7</small>
+                  <small><a href="#">เงื่อนไขการใช้บริการ</a></small>
+                </div>
+                <input type="hidden" name="_csrf" value="<%=token%>">
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    // function submitForm() {
+
+    //   // var form = document.getElementById("form");
+    //   // form.submit();
+
+    //   const forms = document.querySelectorAll('.needs-validation')
+
+    //   Array.from(forms).forEach(form => {
+    //     form.addEventListener('submit', event => {
+    //       if (!form.checkValidity()) {
+    //         event.preventDefault()
+    //         event.stopPropagation()
+    //       }
+    //       form.classList.add('was-validated')
+    //     }, false)
+    //   })
+
+
+    // }
+
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+      'use strict'
+
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      var forms = document.querySelectorAll('.needs-validation')
+
+      // Loop over them and prevent submission
+      Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+          form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+
+            form.classList.add('was-validated')
+          }, false)
+        })
+    })()
+
+  </script>
+
+</body>
+
+</html>
